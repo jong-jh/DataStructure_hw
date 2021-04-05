@@ -264,7 +264,6 @@ void evaluation()
 		else if(*(exp+i)=='*'){		//* 연산자일 경우
 			y=evalPop(evalStack[evalStackTop]);
 			x=evalPop(evalStack[evalStackTop-1]);
-			printf("\nx*y= %d\n",x*y);
 			evalPush(x*y);
 		}
 		else if(*(exp+i)=='/'){		// / 연산자일 경우
