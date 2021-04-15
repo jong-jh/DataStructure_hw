@@ -9,8 +9,6 @@
  *
  */
 
-
-
 #include<stdio.h>
 #include<stdlib.h>
 /* 필요한 헤더파일 추가 if necessary */
@@ -21,7 +19,6 @@ typedef struct Node {
 	struct Node* llink;
 	struct Node* rlink;
 } listNode;
-
 
 
 typedef struct Head {
@@ -122,10 +119,30 @@ int main()
 
 int initialize(headNode** h) {
 
+	/* headNode가 NULL이 아니면, freeNode를 호출하여 할당된 메모리 모두 해제 */
+	if(*h != NULL)
+		freeList(*h);
+
+	/* headNode에 대한 메모리를 할당하여 리턴 */
+	headNode* temp = (headNode*)malloc(sizeof(headNode));
+	temp->first = NULL;
+	*h=temp;
 	return 1;
 }
 
 int freeList(headNode* h){
+	/* h와 연결된 listNode 메모리 해제
+	 * headNode도 해제되어야 함.
+	 */
+	listNode* p = h->first;
+
+	listNode* prev = NULL;
+	while(p != NULL) {
+		prev = p;
+		p = p->rlink;
+		free(prev);
+	}
+	free(h);
 	return 0;
 }
 
@@ -159,7 +176,26 @@ void printList(headNode* h) {
  * list에 key에 대한 노드하나를 추가
  */
 int insertLast(headNode* h, int key) {
+	listNode* p;
+	p=h->first;
+	listNode* temp = (listNode*)malloc(sizeof(listNode));	//노드 생성
+	temp->key=key;
 
+	if(h->first==NULL){//list가 비어있다면
+		temp->llink=NULL;	//첫 번째 노드 이므로 가리키는 노드가 없다.
+		temp->rlink=NULL;
+		h->first=temp;
+		return 0;
+	}
+	while(1){
+		if(p->rlink==NULL){	//p->rlink 가 가리키는 노드가 없다면 마지막 위치이므로
+			temp->rlink=NULL;	//temp의 rlink NULL
+			temp->llink=p;		//temp의 llink p를 가리킨다.
+			p->rlink=temp;		//p의rlink 는 새로운 값 temp를 가리킨다.
+			break;
+		}
+		else p=p->rlink;	//다음 순서로 이동
+	}
 	return 0;
 }
 
@@ -169,7 +205,29 @@ int insertLast(headNode* h, int key) {
  * list의 마지막 노드 삭제
  */
 int deleteLast(headNode* h) {
+	listNode *p=h->first;
 
+	if(h->first==NULL){	//h가 비어있다면 다음을 출력.
+		printf("list is empty. \n");
+		return 0;
+	}
+
+	if(p->rlink==NULL){ //리스트에 노드가 하나만 있다면.
+		h->first=NULL;
+		free(p);
+		return 0;
+	}
+
+	while(1){
+		if(p->rlink->rlink==NULL){	//p->link 가 가리키는 게 없다면 마지막이므로
+			free(p->rlink);
+			p->rlink=NULL;
+			break;
+		}
+		else{
+			p=p->rlink;	//다음 순서로 이동
+		}
+	}
 
 	return 0;
 }
@@ -180,13 +238,40 @@ int deleteLast(headNode* h) {
  * list 처음에 key에 대한 노드하나를 추가
  */
 int insertFirst(headNode* h, int key) {
-	return 0;
+	
+	listNode* temp = (listNode*)malloc(sizeof(listNode));	//노드 생성
+	temp->key=key;
+
+	if(h->first==NULL){//list가 비어있다면
+		temp->llink=NULL;	//첫 번째 노드 이므로 가리키는 노드가 없다.
+		temp->rlink=NULL;
+		h->first=temp;
+		return 0;}
+	
+	else{
+		temp->rlink=h->first;
+		temp->llink=NULL;
+		h->first->llink=temp;
+
+		h->first=temp;
+	return 0;}
+	
 }
 
 /**
  * list의 첫번째 노드 삭제
  */
 int deleteFirst(headNode* h) {
+	listNode* p = h->first;
+
+	if(h->first==NULL){	//h가 비어있다면 다음을 출력.
+		printf("list is empty. \n");
+		return 0;
+	}
+	else {
+		h->first=h->first->rlink;	//헤더노드가 가리키는 값을 헤더노드 링크의 값으로 교체.(이동)
+	}
+	free(p);	//p가 가리키고 있는 공간 동적할당 해제
 
 	return 0;
 }
