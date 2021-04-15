@@ -284,35 +284,115 @@ int deleteFirst(headNode* h) {
  * 처음 재배치를 하게되면, 오른쪽 왼쪽 개념을 상실하는 대신
  * rlink는 다음노드를, llink는 이전노드를 의미하게 된다.
  */
-int invertList(headNode* h) {
-	listNode* lead = h->first;
-	listNode* trail=NULL;
-	while(lead){
-		
-		trail=lead->llink;			//trail에 llink의 값을 저장
-		lead->llink=lead->rlink;	//llink값을 rlink값으로 바꿈
-		lead->rlink=trail;			//rlink 값을 llink값으로 바꿈 -> 순서가 바뀜 
-
-		lead=lead->llink;			//다음 노드로 이동(llink가 다음노드를 가리킨다)
+int invertList(headNode *h)
+{
+	listNode *lead = h->first;
+	listNode *trail = NULL;
+	
+	if(h->first==NULL){	//h가 비어있다면 다음을 출력.
+		printf("list is empty. \n");
+		return 1;
 	}
-	h->first=trail->llink;			//맨 앞의 노드를 h->first가 가리키게 둔다.
+	
+	while (lead)
+	{
+		trail = lead->llink;	   //trail에 llink의 값을 저장
+		lead->llink = lead->rlink; //llink값을 rlink값으로 바꿈
+		lead->rlink = trail;	   //rlink 값을 llink값으로 바꿈 -> 순서가 바뀜
+
+		lead = lead->llink; //다음 노드로 이동(llink가 다음노드를 가리킨다)
+	}
+	h->first = trail->llink; //맨 앞의 노드를 h->first가 가리키게 둔다.
 
 	return 0;
 }
-
-
 
 /* 리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 */
-int insertNode(headNode* h, int key) {
+int insertNode(headNode *h, int key)
+{
+	listNode *p = h->first;
+	listNode *temp = (listNode *)malloc(sizeof(listNode)); //노드 생성
+	temp->key = key;
+	
+	if(h->first==NULL){//list가 비어있다면
+		temp->llink=NULL;	//첫 번째 노드 이므로 가리키는 노드가 없다.
+		temp->rlink=NULL;
+		h->first=temp;
+		return 0;
+	}
+	while(1){
+		
+		if(key<=h->first->key){//temp가 맨 앞 쪽에 와야할 때(헤더노드가 가리키는 값 보다 작을 경우)
+			temp->rlink=h->first;	//temp rlink 를 헤더노드가 가리키던 노드와 연결
+			temp->llink=NULL;		//llink를 NULL (첫 번 째 이므로)
+			h->first->llink=temp;	//밀린 노드의 llink를 temp에 연결
+			h->first=temp;			//헤더 노드 교체
+			break;
+		}
 
+		if(key>p->key){//temp의 key 값이 기존 노드의 값 보다 클 때
+			if(p->rlink==NULL){//끝까지 이동한 경우(값이 가장 클 때)
+				temp->llink=p;	//llink를 p에 연결
+				temp->rlink=NULL;	//rlink는 마지막이므로 NULL
+				p->rlink=temp;		//노드를 새로운 노드와 연결
+				break;
+			}
+			else if(key<=p->rlink->key){//temp가 list의 중간에 들어가는 경우
+				temp->llink=p;	//temp를 list에 연결
+				temp->rlink=p->rlink;
+
+				p->rlink->llink=temp;	//기존 노드들을 temp와 연결 
+				p->rlink=temp;
+				break;
+			}
+			else if(key>p->rlink->key)	p=p->rlink;	//temp 의key가 다음 값 보다 더 크면 이동
+		}
 	return 0;
+	}
 }
-
 
 /**
  * list에서 key에 대한 노드 삭제
  */
 int deleteNode(headNode* h, int key) {
+	listNode* p = h->first;
+	listNode* c; 		//동적해제 할 위치를 저장해주는 포인터
+
+	if(h->first==NULL){	//h가 비어있다면 다음을 출력.
+		printf("list is empty. \n");
+		return 1;
+	}
+	
+	if(h->first->key==key){//첫번째 노드와 일치한다면
+		h->first=h->first->rlink;
+		free(p);
+		return 1;
+	}
+
+	while(1){
+		
+			if(p->rlink->key==key){	//값을 찾았을 때
+				if(p->rlink->rlink==NULL){	//마지막에 위치한 노드라면
+					free(p->rlink);
+					p->rlink=NULL;
+					break;
+				}
+				else{	//마지막에 위치하지 않았을 경우
+					c=p->rlink;	//c에 동적할당해제할 노드를 저장
+					p->rlink=p->rlink->rlink; //새로운 p->rlink 연결 
+					p->rlink->llink=p;			//p와 다음 노드 연결
+					free(c);					//동적할당 해제
+					break;
+				}
+			}
+			else
+				{p=p->rlink; //다음 노드로 이동
+				if(p->rlink==NULL){	//값이 없는 경우 다음을 출력
+					printf("key is not in list\n");
+					break;}
+				}
+		}
+
 
 	return 1;
 }
