@@ -280,8 +280,22 @@ int deleteFirst(headNode* h) {
 
 /**
  * 리스트의 링크를 역순으로 재 배치
+ * 이중 연결리스트의 특성을 이용하여 재배치 하였다.
+ * 처음 재배치를 하게되면, 오른쪽 왼쪽 개념을 상실하는 대신
+ * rlink는 다음노드를, llink는 이전노드를 의미하게 된다.
  */
 int invertList(headNode* h) {
+	listNode* lead = h->first;
+	listNode* trail=NULL;
+	while(lead){
+		
+		trail=lead->llink;			//trail에 llink의 값을 저장
+		lead->llink=lead->rlink;	//llink값을 rlink값으로 바꿈
+		lead->rlink=trail;			//rlink 값을 llink값으로 바꿈 -> 순서가 바뀜 
+
+		lead=lead->llink;			//다음 노드로 이동(llink가 다음노드를 가리킨다)
+	}
+	h->first=trail->llink;			//맨 앞의 노드를 h->first가 가리키게 둔다.
 
 	return 0;
 }
