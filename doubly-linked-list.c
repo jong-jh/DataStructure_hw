@@ -52,7 +52,7 @@ int main()
 	char command;
 	int key;
 	headNode* headnode=NULL;
-
+	printf("----2018038051 Á¤Á¾Çö-----\n");
 	do{
 		printf("----------------------------------------------------------------\n");
 		printf("                     Doubly Linked  List                        \n");
