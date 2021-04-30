@@ -183,17 +183,30 @@ int insert(Node* head, int key)
 
 int deleteLeafNode(Node* head, int key)
 {
-	
+
 }
 
 Node* searchRecursive(Node* ptr, int key)
 {
-
+	if(!ptr) return NULL;	//tree 의 끝에 닿았을 경우
+	if(key==ptr->key) return ptr;	//key값을 만족하는 주소를 찾았을 경우
+	if(key<ptr->key)		//key가 원소의 key보다 작을 경우
+		return searchRecursive(ptr->left,key);	//왼쪽 서브트리로 이동한다
+	else
+		return searchRecursive(ptr->right,key);	//오른쪽 서브트리로 이동한다.
 }
 
 Node* searchIterative(Node* head, int key)
 {
-
+	Node* p=head->left;
+	while(p){//p가 NULL이 될 때 까지 반복 -> 원소를 끝까지 추적하였을 때
+		if(key==p->key) return p;	//key와 일치하는 원소를 찾으면 해당되는 주소를 바환
+		if(key<p->key)	//key 값이 원소의 값보다 작으면
+			p=p->left;	//왼쪽 서브트리로 이동
+		else
+			p=p->right;	//key가 원소의 값보다 크면 오른쪽 서브트리로 이동
+	}
+	return NULL; //반복문 안에서 해당되는 값을 찾지 못 했으므로 NULL 반환
 }
 
 
