@@ -38,7 +38,7 @@ int main()
 	int key;
 	Node* head = NULL;
 	Node* ptr = NULL;	/* temp */
-
+	printf("---2018038051 정종현---\n\n");
 	do{
 		printf("\n\n");
 		printf("----------------------------------------------------------------\n");
@@ -127,17 +127,29 @@ int initializeBST(Node** h) {
 
 void inorderTraversal(Node* ptr)
 {
-
+	if(ptr){
+		inorderTraversal(ptr->left);
+		printf("[%d] ", ptr->key);
+		inorderTraversal(ptr->right);
+	}
 }
 
 void preorderTraversal(Node* ptr)
 {
-
+	if(ptr){
+		printf("[%d] ", ptr->key);
+		preorderTraversal(ptr->left);
+		preorderTraversal(ptr->right);
+	}
 }
 
 void postorderTraversal(Node* ptr)
 {
-
+	if(ptr){
+		postorderTraversal(ptr->left);
+		postorderTraversal(ptr->right);
+		printf("[%d] ", ptr->key);
+	}
 }
 
 
@@ -146,6 +158,11 @@ int insert(Node* head, int key)
 	Node *p = head->left;
 	Node *temp = (Node *)malloc(sizeof(Node)); //새로 삽입할 노드 생성
 	temp->key = key; temp->left=temp->right=NULL;
+	
+	if(head->left==NULL){//tree가 빈 트리라면 헤더노드의 left에 temp 삽입
+		head->left=temp;
+		return 0;
+	}
 
 	while (1)
 	{
@@ -160,12 +177,13 @@ int insert(Node* head, int key)
 			else 	p = p->right;
 		}
 	}
+	return 0;
 }
 
 
 int deleteLeafNode(Node* head, int key)
 {
-
+	
 }
 
 Node* searchRecursive(Node* ptr, int key)
