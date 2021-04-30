@@ -104,7 +104,7 @@ int main()
 			break;
 		}
 
-	}while(command != 'q' && command != 'Q');
+	}while(1);//command != 'q' && command != 'Q');
 
 	return 1;
 }
@@ -208,14 +208,19 @@ Node* searchIterative(Node* head, int key)
 	}
 	return NULL; //반복문 안에서 해당되는 값을 찾지 못 했으므로 NULL 반환
 }
-
+/*
+postorderTraversal 함수를 통해 recursive하게 tree를 방문하면서 
+tree의 원소들을 메모리 해제 해준다.
+*/
 
 int freeBST(Node* head)
 {
-
+	if(head){
+		freeBST(head->left); 
+		if(head->key==-9999) {printf("free head!"); free(head); return 0;}	//tree의 모든 방문을 끝낸 뒤 head로 돌아왔을 때, head->right가 recursive되면
+		//무한하게 함수가 반복되기 때문에, head->left 바로 다음에 head를 메모리 해제 해야한다.
+		
+		freeBST(head->right);
+		free(head);	printf("free! memory\n");	//메모리 해제
+	}
 }
-
-
-
-
-
