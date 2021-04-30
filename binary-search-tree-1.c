@@ -104,7 +104,7 @@ int main()
 			break;
 		}
 
-	}while(1);//command != 'q' && command != 'Q');
+	}while(command != 'q' && command != 'Q');
 
 	return 1;
 }
@@ -123,17 +123,20 @@ int initializeBST(Node** h) {
 	return 1;
 }
 
-
-
+/*
+중위순회, 왼쪽을 먼저 방문한 뒤, 돌아올 때 값을 출력하고 오른쪽으로 이동한다.
+*/
 void inorderTraversal(Node* ptr)
 {
 	if(ptr){
-		inorderTraversal(ptr->left);
-		printf("[%d] ", ptr->key);
-		inorderTraversal(ptr->right);
+		inorderTraversal(ptr->left);		//왼쪽 서브트리로 이동
+		printf("[%d] ", ptr->key);			//왼쪽 서브트리를 나오면 visit
+		inorderTraversal(ptr->right);		//오른쪽 서브트리로 이동 후 앞선 내용 반복
 	}
 }
-
+/*
+전위순회, 방문하게 되면 값을 먼저 출력해준다.
+*/
 void preorderTraversal(Node* ptr)
 {
 	if(ptr){
@@ -142,7 +145,9 @@ void preorderTraversal(Node* ptr)
 		preorderTraversal(ptr->right);
 	}
 }
-
+/*
+후위 순회, 왼쪽 오른쪽 노드를 다 방문 후에 값을 출력한다.
+*/
 void postorderTraversal(Node* ptr)
 {
 	if(ptr){
@@ -166,12 +171,12 @@ int insert(Node* head, int key)
 
 	while (1)
 	{
-		if (key < p->key)
+		if (key < p->key)	//key 가 원소의 값보다 작으면
 		{
-			if(p->left==NULL)	{p->left=temp; break;}
+			if(p->left==NULL)	{p->left=temp; break;}	//왼쪽 서브트리로 이동 , 만약 비어있다면 tree에 삽입
 			else 	p=p->left;
 		}
-		else if (key > p->key)
+		else if (key > p->key)	//key가 원소의 값보다 크면 오른쪽 서브트리로 이동 후 비어있다면 tree에 삽입
 		{
 			if(p->right==NULL)	{p->right=temp; break;}
 			else 	p = p->right;
@@ -183,7 +188,34 @@ int insert(Node* head, int key)
 
 int deleteLeafNode(Node* head, int key)
 {
+	Node* deleteP=searchIterative(head,key);
+	
+	if(!deleteP){//삭제하려는 값이 tree에 없으면
+		printf("key is not in tree\n");
+		return 0;
+	}
+	if(deleteP->left!=NULL||deleteP->right!=NULL){	//만약 리프노드가 아닐 경우에는 left 와 right 가 NULL이 아니므로
+		printf("the node [%d] is not a leaf\n");	//다음을 출력해준다.
+		return 0;
+	}
+	
+	Node* p=head->left;		//만약 헤더노드의 left에 연결된 노드가 삭제할 노드라면 즉 tree에 노드가 하나밖에 없다면
+	if(p==deleteP){head->left=NULL; free(deleteP); return 0;}	//헤더노드의 left를 NULL로 하고 삭제할 노드의 메모리 해제 해준다.
 
+	while(1){
+		if(p->left==deleteP){	
+			p->left=NULL; free(deleteP); break;	//부모노드의 link를 NULL로 해주고, 삭제할 노드의 메모리를 해제한다.
+		}
+		if(p->right==deleteP){
+			p->right=NULL; free(deleteP); break;
+		}
+		if(key<p->key)	//key 값이 원소의 값보다 작으면
+			p=p->left;	//왼쪽 서브트리로 이동
+		else
+			p=p->right;	//key가 원소의 값보다 크면 오른쪽 서브트리로 이동
+	}
+
+	return 0;
 }
 
 Node* searchRecursive(Node* ptr, int key)
