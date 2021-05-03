@@ -249,10 +249,10 @@ int freeBST(Node* head)
 {
 	if(head){
 		freeBST(head->left); 
-		if(head->key==-9999) {printf("free head!"); free(head); return 0;}	//tree의 모든 방문을 끝낸 뒤 head로 돌아왔을 때, head->right가 recursive되면
+		if(head->key==-9999) {/*printf("free head!");*/ free(head); return 0;}	//tree의 모든 방문을 끝낸 뒤 head로 돌아왔을 때, head->right가 recursive되면
 		//무한하게 함수가 반복되기 때문에, head->left 바로 다음에 head를 메모리 해제 해야한다.
 		
 		freeBST(head->right);
-		free(head);	printf("free! memory\n");	//메모리 해제
+		free(head);	/*printf("free! memory\n")*/;	//메모리 해제
 	}
 }
